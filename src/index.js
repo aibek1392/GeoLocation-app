@@ -1,17 +1,28 @@
-import React,{ useState} from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import SeasonDisplay from './SeasonDisplay'
 
 const App = () => {
     const [lat, setLat] = useState(null)
+    const [errorMessage, setErrorMessage] = useState('')
+
 
     window.navigator.geolocation.getCurrentPosition(
         (position) => setLat(position.coords.latitude),
-        (err) => console.log(err)
+        (err) => setErrorMessage(err.message)
     );
+        let whatToRender = () => {
+            if (errorMessage && !lat){
+                return <div style={{ backgroundColor: 'grey', width: '50%', display:'flex', justifyContent: 'center', color: 'red'}}>Error: {errorMessage} </div>
+            }
+            if(!errorMessage && lat){
+                return <div> Latitude: {lat} </div>
+            }
+        }
+        
     return (
-    <div>Lattitude:{lat}</div>
+       <div>{whatToRender()}</div>
     )
 }
 
-ReactDOM.render(<App/>, document.querySelector('#root'))
+ReactDOM.render(<App />, document.querySelector('#root'))
