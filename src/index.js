@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import SeasonDisplay from './SeasonDisplay'
 
@@ -7,21 +7,23 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState('')
 
 
-    window.navigator.geolocation.getCurrentPosition(
-        (position) => setLat(position.coords.latitude),
-        (err) => setErrorMessage(err.message)
-    );
-        let whatToRender = () => {
-            if (errorMessage && !lat){
-                return <div style={{ backgroundColor: 'grey', width: '50%', display:'flex', justifyContent: 'center', color: 'red'}}>Error: {errorMessage} </div>
-            }
-            if(!errorMessage && lat){
-                return <div> Latitude: {lat} </div>
-            }
+    useEffect(() => {
+        window.navigator.geolocation.getCurrentPosition(
+            (position) => setLat(position.coords.latitude),
+            (err) => setErrorMessage(err.message)
+        );
+    },[])
+
+    let whatToRender = () => {
+        if (errorMessage && !lat) {
+            return <div style={{ backgroundColor: 'grey', width: '50%', display: 'flex', justifyContent: 'center', color: 'red' }}>Error: {errorMessage} </div>
         }
-        
+        if (!errorMessage && lat) {
+            return <SeasonDisplay latitude={lat} />
+        }
+    }
     return (
-       <div>{whatToRender()}</div>
+        <div>{whatToRender()}</div>
     )
 }
 
